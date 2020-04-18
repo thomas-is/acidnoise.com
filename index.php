@@ -11,7 +11,7 @@ if( @$page->error == 404 )
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo \cms\config::HTML_TITLE;?></title>
 <?php foreach( $page->css as $css): ?><link rel="stylesheet" type="text/css" href="<?php echo $css;?>"><?php endforeach; ?>
-<?php foreach( $page->js  as $js ): ?><script type="text/javascript" src="<?php echo $js; ?>"></script><?php endforeach; ?>
+<?php foreach( $page->js  as $js ): ?><script src="<?php echo $js; ?>"></script><?php endforeach; ?>
 </head>
 <body>
 <header><?php echo $page->header; ?></header>
