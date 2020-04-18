@@ -258,10 +258,12 @@ i.toggle:before{
 }
 
 [data-machine="binaural-harmonics"] {
-    --bg: 100,100,100;
+    --hue: 45;
+    --sat: 90%;
+    --lum: 60%;
     background-image: url('../pics/psychedelic.jpg');
-    background-position-x: -71px;
-    background-position-y: -1px;
+    background-position-x: -70px;
+    background-position-y: 0px;
 }
 [data-property="h0"] { --hsl:   0,100%,50% ; }
 [data-property="h1"] { --hsl:  45,100%,50% ; }
@@ -281,5 +283,6 @@ div#presets {
     width: 100%;
     
 }
+
 
 
