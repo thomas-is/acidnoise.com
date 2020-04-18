@@ -3,16 +3,13 @@
 namespace cms;
 
 class config {
-
-    const HTML_LANG     = "en";
-    const HTML_CHARSET  = "utf-8";
-    const HTML_TITLE    = "Acid Noise";
-
-    const DIR_STATIC    = "static".DIRECTORY_SEPARATOR;
-    const DIR_CSS       = "res".DIRECTORY_SEPARATOR;
-    const DIR_JS        = "res".DIRECTORY_SEPARATOR;
-    const DIR_PAGES     = "pages".DIRECTORY_SEPARATOR;
-
+    const HTML_LANG     = \config::CMS_HTML_LANG    ;
+    const HTML_CHARSET  = \config::CMS_HTML_CHARSET ;
+    const HTML_TITLE    = \config::CMS_HTML_TITLE   ;
+    const DIR_STATIC    = \config::CMS_DIR_STATIC   ;
+    const DIR_CSS       = \config::CMS_DIR_CSS      ;
+    const DIR_JS        = \config::CMS_DIR_JS       ;
+    const DIR_PAGES     = \config::CMS_DIR_PAGES    ;
 }
 
 ?>
