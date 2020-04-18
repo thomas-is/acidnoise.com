@@ -1,0 +1,89 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+body {
+  padding: 0px 8px;
+  box-sizing: border-box;
+}
+body > * {
+  max-width: var(--page-w);
+/*
+  padding-left: calc(50% - var(--page-w) / 2 );
+  padding-right: calc(50% - var(--page-w) / 2 );
+*/
+  margin: auto;
+}
+
+header {
+  height: var(--header-h);
+}
+footer {
+  height: var(--footer-h);
+}
+nav {
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  height: var(--nav-h);
+  z-index: 1000;
+  box-sizing: border-box;
+}
+nav > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+main {
+ 
+}
+
+@media only screen and (max-width: 500px ) {
+  body { padding: 0px }
+  /* collapse menu */
+  nav {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    flex-flow: column nowrap;
+    line-height: var(--nav-h);
+    max-height:  var(--nav-h);
+    overflow: hidden;
+    transition: max-height 0.5s ease-in;
+  }
+  nav.expanded {
+    max-height: 100%;
+    transition: max-height 0.5s ease-out;
+  }
+  nav > a {
+    width: 90%;
+    margin-left: auto;
+  }
+  nav > a:last-child {
+    margin-bottom: var(--nav-h);
+  }
+  
+  nav > .menu {
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  nav > .menu:before {
+    content: "i";
+    font-family: "Entypo";
+    font-variant: initial;
+    font-size: var(--nav-h);
+    line-height: calc( var(--nav-h) / 2 );
+  }
+  nav.expanded > .menu:before {
+    content: "i";
+  }
+  header {
+    margin-top: var(--nav-h);
+  }
+}
+
+
+

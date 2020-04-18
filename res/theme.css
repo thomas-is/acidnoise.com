@@ -1,0 +1,113 @@
+@font-face {
+    font-family: Entypo;
+    src: url(../fonts/Entypo.otf) format("opentype");
+}
+@font-face {
+    font-family: Typicons;
+    src: url(../fonts/typicons.woff) format("woff");
+}
+
+:root {
+  --page-w: 884px;
+  --header-h: 200px;
+  --footer-h: auto;
+  --nav-h: 48px;
+  color: #fff;
+  background-color: #222;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+header, footer {
+}
+
+header {
+  display: flex;
+  font-variant: all-small-caps;
+}
+nav {
+  color: white;
+  background-color: #404;
+  box-shadow: 0px 0px calc(var(--nav-h) * 0.2) black;
+  border-radius: 8px;
+  font-family: serif;
+  font-size: calc(var(--nav-h) / 3);
+  font-variant: small-caps;
+  font-stretch: condensed;
+  text-shadow: 0px 0px 4px white;
+  padding: 0px 8px;
+}
+
+
+header > h1 {
+  text-align: center;
+  line-height: calc(32px + 4vw);
+  font-size: calc(32px + 4vw);
+  margin: auto;
+  text-shadow: -1px -0px 4px red, 1px 0px 4px blue, 0px 0px 4px white;
+}
+
+a {
+  color: inherit;
+}
+
+nav > a {
+  padding: 0px 8px;
+  height: var(--nav-h);
+  line-height: var(--nav-h);
+}
+
+nav > a[href="contact"] {
+  font-size: 0;
+  margin-left: auto;
+}
+nav > a[href="contact"]:before {
+  content: "%";
+  font-size: calc( var(--nav-h) / 1.5 );
+  line-height:  calc( var(--nav-h) / 1.5 );
+  font-family: "Entypo";
+  font-variant: initial;
+}
+nav > a[href="."] {  font-size: 0; }
+nav > a[href="."]:before {
+  content: "ï";
+  font-size: calc( var(--nav-h) / 1.5 );
+  line-height:  calc( var(--nav-h) / 1.5 );
+  font-family: "Entypo";
+  font-variant: initial;
+}
+
+footer {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+footer > img {
+  flex: 0 0 auto;
+  margin: auto 12px;
+  height: 64px;
+}
+
+
+
+main {
+  min-height: 60%;
+  padding-top: 24px;
+}
+
+main > h2 {
+  margin: 0;
+}
+
+
+/* min padding when below max page width */
+@media only screen and (max-width: 840px ) {
+  header, nav, main, footer {
+    width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+    box-sizing: border-box;
+  }
+}

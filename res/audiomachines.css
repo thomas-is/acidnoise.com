@@ -1,0 +1,285 @@
+section#rack {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+#rack {
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
+}
+
+
+div#presets, div#master, [data-machine] {
+    color: black;
+    --hue: 0;
+    --sat: 0%;
+    --lum: 0%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+        to bottom right,
+        hsl(var(--hue),var(--sat),calc(var(--lum) + 20% )),
+        hsl(var(--hue),var(--sat),calc(var(--lum) - 20%) )
+        );
+    border-radius: 8px;
+    box-shadow: 0px 0px 12px #000 inset, 0px 0px 12px #000;
+    text-shadow: 0px 0px 1px #000c;
+    font-family: monospace;
+    width: 256px;
+    min-width: 285px;
+    margin: 4px ;
+    padding: 6px 6px;
+    box-sizing: border-box;
+}
+
+div#master, [data-machine] > * {
+    flex: 0 0 auto;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items:  center;
+    text-shadow: inherit;
+    line-height: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
+}
+
+div#master {
+    color: white;
+    text-shadow: 0px 0px 1px #fffc;
+    flex: 0 0 auto;
+    font-variant: all-small-caps;
+}
+
+[data-machine] > p > span {
+    width: 48px;
+    text-align: right;
+}
+
+[data-machine] > h2 {
+    font-size: 24px;
+    line-height: 28px;
+    font-variant: all-small-caps;
+}
+[data-machine] > h3 {
+    font-size: 20px;
+    line-height: 20px;
+    font-variant: all-small-caps;
+}
+
+
+[data-machine] > * > * {
+    flex: 0 0 auto;
+    margin: 4px;
+}
+
+
+p.nocaps {
+    font-variant: none;
+    font-weight: unset;
+}
+
+
+i:before, i:after { box-sizing: border-box; }
+
+
+.led {
+    --hue: 0;
+    --sat: 80%;
+    --value: 0;
+    --size: 18px;
+    display: block;
+    width: var(--size) ;
+    height: var(--size) ;
+    background: radial-gradient(
+        hsl(var(--hue),var(--sat),calc(var(--value) * 40% + 25%)),
+        hsl(var(--hue),var(--sat),calc(var(--value) * 20%))
+    );
+    border-radius: 100%;
+    border: 1px solid #0004;
+    margin: 4px auto;
+    padding: 0;
+    z-index: 10;
+    transition: all 0.5s;
+    box-shadow: 0px 0px calc( var(--size) * 1.5 )
+        hsla(var(--hue),var(--sat),50%,var(--value));
+}
+
+.red {
+    --hue: 0;
+    --sat: 100%;
+}
+.orange {
+    --hue: 45;
+    --sat: 100%;
+}
+.green { 
+    --hue: 135;   
+    --sat: 100%;
+}
+.cyan {
+    --hue: 180;
+    --sat: 100%;
+}
+.blue {
+    --hue: 225;
+    --sat: 100%;
+}
+.purple {
+    --hue: 315;
+    --sat: 100%;
+}
+.pink {
+    --hue: 340;
+    --sat: 100%;
+}
+
+i.toggle {
+    --value: 0;
+    --size: 18px;
+    --bg-hi: #444;
+    --bg-lo: #222;
+    --bg-halo : #444;
+    --fg-hi: #ddd;
+    --fg-lo: #000;
+    --fg-halo: #ddd;
+    cursor: pointer;
+    display: block;
+    height: var(--size) ;
+    width: calc(var(--size)*2) ;
+    background: radial-gradient(var(--bg-hi),var(--bg-lo));
+    border: 2px solid #000;
+    border-radius: 20% / 50%;
+    box-shadow: 0px 0px calc(var(--size) / 10) var(--bg-lo) inset, 0px 0px calc(var(--size) / 4 ) var(--bg-halo);
+    margin: 4px auto;
+    padding: 0;
+    z-index: 10;
+}
+i.toggle:before{
+    content:"";
+    display: block;
+    width: var(--size) ;
+    height: var(--size) ;
+    background: linear-gradient(var(--fg-hi),var(--fg-lo));
+    border: 2px solid var(--fg-lo);
+    border-radius: 100%;
+    z-index: 20;
+    margin-left: calc( var(--value)  * var(--size) );
+    transition: all 0.25s ease-out;
+}
+
+.slider {
+    --hsl: 0,0%,85%;
+    cursor: pointer;
+    --size: 24px;
+    --n : 8;
+    --value: 0;
+    height: var(--size);
+    width: calc( var(--size) * var(--n) );
+    border: 2px solid #000;
+    border-radius:var(--size);
+    background-color: hsla(var(--hsl), calc( 0.25 + var(--value) / 2));
+    z-index: 20;
+    box-sizing: border-box;
+}
+
+.slider:before {
+    content: "";
+    display: block;
+    width: var(--size);
+    height: var(--size);
+    background: linear-gradient( hsla(var(--hsl),1), hsla(var(--hsl),0.25) );
+    background-color: black;
+    border: 2px solid black;
+    border-radius: 100%;
+    z-index: 21;
+
+    margin-left: calc( (var(--size) * ( var(--n) - 1 ) ) * var(--value) - 2px ) ;
+    margin-right: 0;
+    margin-top: -2px;
+    margin-bottom: 0;
+
+    transition: margin 0.25s ease-out;
+    box-sizing: border-box;
+}
+.slider.vertical {
+    width: calc(var(--size) * .1);
+    height: var(--size);
+}
+.slider.vertical:before {
+    margin-top: calc(var(--size) * ( 1 - var(--value) ) - var(--h) / 2);
+    margin-left: calc( -0.5 * var(--w) + var(--size) * .05);
+}
+
+[data-machine$="-noise"] {
+    --hue: 0;
+    --sat: 0%;
+    --lum: 100%;
+}
+
+[data-machine="pink-noise"] {
+    --hue: 330;
+    --sat: 100%;
+    --lum: 60%;
+}
+[data-machine="brown-noise"] {
+    --hue: 17;
+    --sat: 90%;
+    --lum: 45%;
+}
+[data-machine="noise-harmonics"] {
+    --hue: 330;
+    --sat: 80%;
+    --lum: 60%;
+    color: white;
+    text-shadow: 0px 0px 1px white;
+    background-image: url('../pics/pink_cosmos.jpg');
+    background-size: cover;
+    background-position-x: -28px;
+}
+
+
+
+
+
+[data-machine="lpf-noise"] {
+    color: white;
+    --hue: 270;
+    --sat: 25%;
+    --lum: 5%;
+}
+
+[data-machine="binaural-harmonics"] {
+    --bg: 100,100,100;
+    background-image: url('../pics/psychedelic.jpg');
+    background-position-x: -71px;
+    background-position-y: -1px;
+}
+[data-property="h0"] { --hsl:   0,100%,50% ; }
+[data-property="h1"] { --hsl:  45,100%,50% ; }
+[data-property="h2"] { --hsl:  90,100%,50% ; }
+[data-property="h3"] { --hsl: 135,100%,50% ; }
+[data-property="h4"] { --hsl: 180,100%,50% ; }
+[data-property="h5"] { --hsl: 225,100%,50% ; }
+[data-property="h6"] { --hsl: 270,100%,50% ; }
+[data-property="h7"] { --hsl: 315,100%,50% ; }
+
+.separator {
+    height: 20px;
+}
+
+
+div#presets {
+    width: 100%;
+    
+}
+
+

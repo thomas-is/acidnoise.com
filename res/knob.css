@@ -1,0 +1,39 @@
+i.knob {
+    --knob-bg-hi: #888;
+    --knob-bg-lo: #000;
+    --knob-bg-halo : #000;
+    --knob-fg-hi: #ddd;
+    --knob-fg-lo: #aaa;
+    --knob-fg-halo: #888;
+    --size: 96px;
+    --value: 0;
+    cursor: pointer;
+    display: block;
+    width: var(--size) ;
+    height: var(--size) ;
+    background: linear-gradient(var(--knob-bg-hi),var(--knob-bg-lo));
+    border: 2px solid black;
+    border-radius: 100%;
+    box-shadow: 0px 0px calc(var(--size) / 4) var(--knob-bg-lo) inset, 0px 0px calc(var(--size) / 20) var(--knob-bg-halo);
+    margin: 4px auto;
+    padding: 0;
+    z-index: 10;
+}
+
+i.knob:before {
+    box-sizing: border-box;
+    content: "";
+    display: block;
+    width: calc(var(--size) / 8);
+    height: calc(var(--size) * 0.35);
+    margin: calc(var(--size) * 0.57) auto 0px auto;
+    
+    background: linear-gradient(var(--knob-fg-hi),var(--knob-fg-lo));
+    border-radius: 0% 0% 100% 100% / 40%;
+    box-shadow: 0px 0px 4px var(--knob-fg-halo);
+    z-index: 20;
+    transform-origin: 50% -25%;
+    transform: rotateZ( calc( 270deg * var(--value) + 45deg ) );
+    transition: transform 0.5s linear;;
+}
+
