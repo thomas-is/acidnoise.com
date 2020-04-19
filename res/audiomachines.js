@@ -2,7 +2,7 @@
  *
  * MIT License
  * 
- * Copyright (c) 2020 Thomas Issa-Sayegh
+ * Copyright (c) 2020 Thomas Issa-Sayegh (thomas@0l.fi)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
