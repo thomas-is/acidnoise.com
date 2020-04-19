@@ -2,10 +2,6 @@
     font-family: Entypo;
     src: url(../fonts/Entypo.otf) format("opentype");
 }
-@font-face {
-    font-family: Typicons;
-    src: url(../fonts/typicons.woff) format("woff");
-}
 
 :root {
   --page-w: 884px;
@@ -18,8 +14,11 @@
   font-size: 12px;
 }
 
-header, footer {
+hr {
+  margin: 16px auto;
+  max-width: 64px
 }
+
 
 header {
   display: flex;
@@ -80,14 +79,23 @@ nav > a[href="."]:before {
 footer {
   padding-top: 24px;
   padding-bottom: 24px;
+}
+
+.logo {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  margin-top: 16px;
 }
-footer > img {
+.logo img {
   flex: 0 0 auto;
   margin: auto 12px;
-  height: 64px;
+  max-width: 64px;
+  max-height: 64px;
+}
+.column {
+  flex-flow: column nowrap;
+  align-items: center;
 }
 
 
@@ -111,3 +119,5 @@ main > h2 {
     box-sizing: border-box;
   }
 }
+
+
