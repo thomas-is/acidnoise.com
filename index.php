@@ -1,5 +1,5 @@
 <?php
-include('bootstrap.php');
+include('bootloader.php');
 $page = new \cms\page(@$_REQUEST['page']);
 if( @$page->error == 404 ) 
   header("HTTP/1.1 404");
