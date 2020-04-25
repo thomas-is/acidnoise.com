@@ -14,7 +14,7 @@ section#rack {
 }
 
 
-div#presets, div#master, [data-machine] {
+div#master, [data-machine] {
     color: black;
     --hue: 0;
     --sat: 0%;
@@ -34,12 +34,12 @@ div#presets, div#master, [data-machine] {
     font-family: monospace;
     width: 256px;
     min-width: 285px;
-    margin: 4px ;
+    margin-bottom: 12px;
     padding: 6px 6px;
     box-sizing: border-box;
 }
 
-div#master, [data-machine] > * {
+div#master > * , [data-machine] > * {
     flex: 0 0 auto;
     display: flex;
     flex-flow: row nowrap;
@@ -55,7 +55,9 @@ div#master, [data-machine] > * {
 div#master {
     color: white;
     text-shadow: 0px 0px 1px #fffc;
-    flex: 0 0 auto;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-around;
     font-variant: all-small-caps;
 }
 
@@ -278,11 +280,6 @@ i.toggle:before{
     height: 20px;
 }
 
-
-div#presets {
-    width: 100%;
-    
-}
 
 
 
