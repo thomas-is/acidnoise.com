@@ -58,7 +58,6 @@ div#master {
     flex-flow: row nowrap;
     align-items: center;
     justify-content: space-around;
-    font-variant: all-small-caps;
 }
 
 [data-machine] > p > span {
@@ -66,7 +65,7 @@ div#master {
     text-align: right;
 }
 
-[data-machine] > h2 {
+div#master > h2, [data-machine] > h2 {
     font-size: 24px;
     line-height: 28px;
     font-variant: all-small-caps;
@@ -279,6 +278,7 @@ i.toggle:before{
 .separator {
     height: 20px;
 }
+
 
 
 

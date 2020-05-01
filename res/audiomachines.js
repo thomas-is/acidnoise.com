@@ -1,4 +1,57 @@
 /**
+ * The bufferNoise function comes from noisehack.com
+ * https://noisehack.com/generate-noise-web-audio-api/
+ **/
+function bufferNoise ( type, duration = 10 ) {
+  var size      = audioContext.sampleRate * duration;
+  var nChannels = 2;
+  var buffer    = audioContext.createBuffer(nChannels, size, audioContext.sampleRate);
+  switch( type ) {
+    case "pink":
+      var white;
+      var b0, b1, b2, b3, b4, b5, b6;
+      for( var channel = 0; channel < nChannels; channel++) {
+        b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
+        for (var i = 0; i < size; i++) {
+          white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          buffer.getChannelData(channel)[i]= b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+          buffer.getChannelData(channel)[i]*= 0.11; 
+          b6 = white * 0.115926;
+        }
+      }
+      break;
+    case "brown":
+      var white;
+      var lastOut;
+      for( var channel = 0; channel < nChannels; channel++) {
+        lastOut = 0.0;
+        for (var i = 0; i < size; i++) {
+          white = Math.random() * 2 - 1;
+          buffer.getChannelData(channel)[i] = (lastOut + (0.02 * white)) / 1.02;
+          lastOut = buffer.getChannelData(channel)[i];
+          buffer.getChannelData(channel)[i] *= 3.5;
+        }
+      }
+      break;
+    case "white":
+    default:
+      for( var channel = 0; channel < nChannels; channel++) {
+        for (var i = 0; i < size; i++) 
+          buffer.getChannelData(channel)[i] = ( Math.random() * 2 - 1 ) * .5; // reduce gain
+      }
+      break;
+  }
+  return buffer;
+}
+
+
+/**
  *
  * MIT License
  * 
@@ -58,6 +111,9 @@ function boot() {
         break;
       case 'binaural-harmonics':
         rack.push(new boxBinauralHarmonics(nodes[n]));
+        break;
+      case 'binaural-modulation':
+        rack.push(new boxBinauralModulation(nodes[n]));
         break;
       case 'noise-harmonics':
         rack.push(new boxNoiseHarmonics(nodes[n]));
@@ -303,7 +359,7 @@ class boxBinauralHarmonics extends box {
     this.binaurals = new Array();
     this.controls  = new Array();
 
-    /* don't let any harmonic go pas 1500 Hz */
+    /* don't let any harmonic go past 1500 Hz to keep binaural effect */
     var base = 55; // A1@55Hz
     for(var i=0; i<8; i++) {
       this.binaurals.push( new audioBinauralSine() );
@@ -313,17 +369,17 @@ class boxBinauralHarmonics extends box {
       this.controls.push( new controlFloat(this,"h"+i, 0, 1, "exp") );
     }
 
-    this.binaurals[0].delta = 0.5;  // Delta f = 0.5 to 4
+    this.binaurals[0].delta = 0.5;  // brainwave (Hz) Delta f = 0.5 to 4
     this.binaurals[1].delta = 1;
-    this.binaurals[2].delta = 3;    // Theta f = 4 to 7
+    this.binaurals[2].delta = 3;    // brainwave (Hz) Theta f = 4 to 7
     this.binaurals[3].delta = 6;
-    this.binaurals[4].delta = 8;    // Alpha f = 7.5 to 12.5
+    this.binaurals[4].delta = 8;    // brainwave (Hz) Alpha f = 7.5 to 12.5
     this.binaurals[5].delta = 12;
-    this.binaurals[6].delta = 16;   // Beta f = 12.5 to 30
+    this.binaurals[6].delta = 16;   // brainwave (Hz) Beta  f = 12.5 to 30
     this.binaurals[7].delta = 32;
 
-    for(var i=0; i<8; i++)
-      this.controls[i].value = 0.2;
+    for(var i=0; i<8; i++) this.controls[i].value = 0.2;
+
   }
 
   set h0( value ) { this.binaurals[0].level = value / 8 * 1.5;   }
@@ -337,53 +393,6 @@ class boxBinauralHarmonics extends box {
 
 }
 
-function bufferNoise ( type, duration = 10 ) {
-  var size      = audioContext.sampleRate * duration;
-  var nChannels = 2;
-  var buffer    = audioContext.createBuffer(nChannels, size, audioContext.sampleRate);
-  switch( type ) {
-    case "pink":
-      var white;
-      var b0, b1, b2, b3, b4, b5, b6;
-      for( var channel = 0; channel < nChannels; channel++) {
-        b0 = b1 = b2 = b3 = b4 = b5 = b6 = 0.0;
-        for (var i = 0; i < size; i++) {
-          white = Math.random() * 2 - 1;
-          b0 = 0.99886 * b0 + white * 0.0555179;
-          b1 = 0.99332 * b1 + white * 0.0750759;
-          b2 = 0.96900 * b2 + white * 0.1538520;
-          b3 = 0.86650 * b3 + white * 0.3104856;
-          b4 = 0.55000 * b4 + white * 0.5329522;
-          b5 = -0.7616 * b5 - white * 0.0168980;
-          buffer.getChannelData(channel)[i]= b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-          buffer.getChannelData(channel)[i]*= 0.11; 
-          b6 = white * 0.115926;
-        }
-      }
-      break;
-    case "brown":
-      var white;
-      var lastOut;
-      for( var channel = 0; channel < nChannels; channel++) {
-        lastOut = 0.0;
-        for (var i = 0; i < size; i++) {
-          white = Math.random() * 2 - 1;
-          buffer.getChannelData(channel)[i] = (lastOut + (0.02 * white)) / 1.02;
-          lastOut = buffer.getChannelData(channel)[i];
-          buffer.getChannelData(channel)[i] *= 3.5;
-        }
-      }
-      break;
-    case "white":
-    default:
-      for( var channel = 0; channel < nChannels; channel++) {
-        for (var i = 0; i < size; i++) 
-          buffer.getChannelData(channel)[i] = ( Math.random() * 2 - 1 ) * .5; // reduce gain
-      }
-      break;
-  }
-  return buffer;
-}
 
 
 // TODO name : audioStereoMixer
@@ -455,6 +464,104 @@ class audioBinauralSine {
     this.oscillatorLeft.frequency.value = f;
     this.oscillatorRight.frequency.value = f + delta;
   }
+}
+
+
+class boxBinauralModulation extends box {
+
+  constructor( node ) {
+    super(node);
+    this.source  = new audioModulation;
+    this.source.output.connect(  this.master );
+    this.master.connect( audioContext.destination );
+
+    this.masterCtrl.bijection.max = 0.05;
+    this.masterCtrl.value = 0.005;
+
+    this.modulationCtrl = new controlFloat(this,'modulation',0,10,'exp');
+    this.fCtrl = new controlFloat(this,'f',110,440,'exp');
+
+    this.isStarted = false;
+  }
+
+  get modulation() { return this.source.modulation; }
+  set modulation( x ) {
+    this.source.modulation = x;
+  }
+  get f() { return this.source.frequency; }
+  set f( x ) {
+    this.source.frequency = x;
+  }
+
+
+}
+
+class audioModulation {
+
+  constructor() {
+
+    this.oscillatorLeft         = audioContext.createOscillator();
+    this.oscillatorRight        = audioContext.createOscillator();
+    this.oscillatorLeft.type    = "sine";
+    this.oscillatorRight.type   = "sine";
+    this.oscillatorLeft. frequency.value = 110;
+    this.oscillatorRight.frequency.value = 110;
+
+    this.gainLeft               = audioContext.createGain();
+    this.gainRight              = audioContext.createGain();
+    this.gainLeft.gain.value    = 0;  
+    this.gainRight.gain.value   = 0;  
+
+    this.oscillatorLeft.connect( this.gainLeft);
+    this.oscillatorRight.connect(this.gainRight);
+
+    this.stereoPanner           = new audioStereoPanner;
+    this.gainLeft.connect(this.stereoPanner.input.left);
+    this.gainRight.connect(this.stereoPanner.input.right);
+
+    this.modulatorLeft          = audioContext.createOscillator();
+    this.modulatorRight         = audioContext.createOscillator();
+    this.modulatorLeft.type     = "sine";
+    this.modulatorRight.type    = "sine";
+    this.modulatorLeft.frequency.value  = 2;
+    this.modulatorRight.frequency.value = 2;
+
+    this.modulatorLeft.connect( this.gainLeft.gain);
+    this.modulatorRight.connect(this.gainRight.gain);
+
+    this.oscillatorLeft.start();
+    this.oscillatorRight.start();
+    this.modulatorLeft.start();
+    this.modulatorRight.start();
+
+  }
+
+  get output() { return this.stereoPanner.output; }
+
+  get level()  { return this.output.gain.value;   }
+  set level(x) { this.output.gain.value = x; } 
+
+  get modulation()  { return this.modulatorLeft.frequency.value; }
+  set modulation(f) {
+    this.modulatorLeft.frequency.value  = f;
+    this.modulatorRight.frequency.value = f;
+  }
+
+  get frequency()  { return this.oscillatorLeft.frequency.value; }
+  set frequency(f) {
+    var delta = this.delta;
+    this.oscillatorLeft.frequency.value = f;
+    this.oscillatorRight.frequency.value = f + delta;
+  }
+  get delta() {
+    return this.oscillatorRight.frequency.value  - this.oscillatorLeft.frequency.value;
+  }
+  set delta( delta ) {
+    var f = this.frequency;
+    this.oscillatorLeft.frequency.value = f;
+    this.oscillatorRight.frequency.value = f + delta;
+  }
+
 
 }
 
