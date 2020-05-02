@@ -211,12 +211,14 @@ class boxLPFNoise extends box {
 
     this.noise  = audioContext.createBufferSource();
     this.filter = audioContext.createBiquadFilter();
+    this.tremolo = new effectTremolo;
 
     this.noise.buffer = bufferNoise("white",10);
     this.noise.loop   = true;
 
     this.noise.connect(  this.filter );
-    this.filter.connect( this.master );
+    this.filter.connect( this.tremolo.input );
+    this.tremolo.output.connect( this.master );
     this.master.connect( audioContext.destination );
 
     this.noise.start();
@@ -224,16 +226,21 @@ class boxLPFNoise extends box {
 
     this.fCtrl     = new controlFloat(this,'f',128,1024);
     this.qCtrl     = new controlFloat(this,'q',0,1.8);
+    this.rateCtrl  = new controlFloat(this,'rate',0,12);
 
     this.fCtrl.value = 256;
     this.qCtrl.value = 0.9;
+    this.rateCtrl.value = 0;
 
   }
 
   get f()  { return this.filter.frequency.value; }
-  set f(x) { this.filter.frequency.linearRampToValueAtTime( x, audioContext.currentTime + 0.5); }
+  set f(x) { return this.filter.frequency.linearRampToValueAtTime( x, audioContext.currentTime + 0.5); }
   get q()  { return this.filter.Q.value; }
-  set q(x) { this.filter.Q.linearRampToValueAtTime( x * 10.0, audioContext.currentTime + 0.5);  }
+  set q(x) { return this.filter.Q.linearRampToValueAtTime( x * 10.0, audioContext.currentTime + 0.5);  }
+
+  get rate()  { return this.tremolo.rate; }
+  set rate(x) { return this.tremolo.rate = x; }
 
 }
 
@@ -395,6 +402,50 @@ class boxBinauralHarmonics extends box {
 
 
 
+class effectTremolo {
+
+  /**
+  *
+  * a simple gain node driven by an oscillator
+  *
+  **/
+
+  constructor() {
+
+    this.audioGain                  = audioContext.createGain();
+    this.audioGain.gain.value       = 0;
+
+    this.oscillator                 = audioContext.createOscillator();
+    this.oscillator.type            = "sine";
+    this.oscillator.frequency.value = 0;
+    this.oscillator.start()
+    
+    console.log(this);
+
+  }
+
+  get input()     { return this.audioGain; }
+  get output()    { return this.audioGain; }
+  get state()     { return ( this.rate != 0 ); }
+
+  get rate()      { return this.oscillator.frequency.value; } 
+  set rate(x)     {
+    if( x == 0 ) {
+      this.oscillator.disconnect();
+      this.audioGain.gain.value = 1;
+    } else {
+      this.audioGain.gain.value = 0;
+      this.oscillator.connect( this.audioGain.gain );
+    }
+    this.oscillator.frequency.value = x;
+  } 
+  get waveform()  { return this.oscillator.type; } 
+  set waveform(x) { return this.oscillator.type = x; } 
+
+}
+
+
+
 // TODO name : audioStereoMixer
 class audioStereoPanner {
   /*
@@ -465,106 +516,6 @@ class audioBinauralSine {
     this.oscillatorRight.frequency.value = f + delta;
   }
 }
-
-
-class boxBinauralModulation extends box {
-
-  constructor( node ) {
-    super(node);
-    this.source  = new audioModulation;
-    this.source.output.connect(  this.master );
-    this.master.connect( audioContext.destination );
-
-    this.masterCtrl.bijection.max = 0.05;
-    this.masterCtrl.value = 0.005;
-
-    this.modulationCtrl = new controlFloat(this,'modulation',0,10,'exp');
-    this.fCtrl = new controlFloat(this,'f',110,440,'exp');
-
-    this.isStarted = false;
-  }
-
-  get modulation() { return this.source.modulation; }
-  set modulation( x ) {
-    this.source.modulation = x;
-  }
-  get f() { return this.source.frequency; }
-  set f( x ) {
-    this.source.frequency = x;
-  }
-
-
-}
-
-class audioModulation {
-
-  constructor() {
-
-    this.oscillatorLeft         = audioContext.createOscillator();
-    this.oscillatorRight        = audioContext.createOscillator();
-    this.oscillatorLeft.type    = "sine";
-    this.oscillatorRight.type   = "sine";
-    this.oscillatorLeft. frequency.value = 110;
-    this.oscillatorRight.frequency.value = 110;
-
-    this.gainLeft               = audioContext.createGain();
-    this.gainRight              = audioContext.createGain();
-    this.gainLeft.gain.value    = 0;  
-    this.gainRight.gain.value   = 0;  
-
-    this.oscillatorLeft.connect( this.gainLeft);
-    this.oscillatorRight.connect(this.gainRight);
-
-    this.stereoPanner           = new audioStereoPanner;
-    this.gainLeft.connect(this.stereoPanner.input.left);
-    this.gainRight.connect(this.stereoPanner.input.right);
-
-    this.modulatorLeft          = audioContext.createOscillator();
-    this.modulatorRight         = audioContext.createOscillator();
-    this.modulatorLeft.type     = "sine";
-    this.modulatorRight.type    = "sine";
-    this.modulatorLeft.frequency.value  = 2;
-    this.modulatorRight.frequency.value = 2;
-
-    this.modulatorLeft.connect( this.gainLeft.gain);
-    this.modulatorRight.connect(this.gainRight.gain);
-
-    this.oscillatorLeft.start();
-    this.oscillatorRight.start();
-    this.modulatorLeft.start();
-    this.modulatorRight.start();
-
-  }
-
-  get output() { return this.stereoPanner.output; }
-
-  get level()  { return this.output.gain.value;   }
-  set level(x) { this.output.gain.value = x; } 
-
-  get modulation()  { return this.modulatorLeft.frequency.value; }
-  set modulation(f) {
-    this.modulatorLeft.frequency.value  = f;
-    this.modulatorRight.frequency.value = f;
-  }
-
-  get frequency()  { return this.oscillatorLeft.frequency.value; }
-  set frequency(f) {
-    var delta = this.delta;
-    this.oscillatorLeft.frequency.value = f;
-    this.oscillatorRight.frequency.value = f + delta;
-  }
-  get delta() {
-    return this.oscillatorRight.frequency.value  - this.oscillatorLeft.frequency.value;
-  }
-  set delta( delta ) {
-    var f = this.frequency;
-    this.oscillatorLeft.frequency.value = f;
-    this.oscillatorRight.frequency.value = f + delta;
-  }
-
-
-}
-
 
 
 /**
