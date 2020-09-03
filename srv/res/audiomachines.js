@@ -21,7 +21,7 @@ function bufferNoise ( type, duration = 10 ) {
           b4 = 0.55000 * b4 + white * 0.5329522;
           b5 = -0.7616 * b5 - white * 0.0168980;
           buffer.getChannelData(channel)[i]= b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
-          buffer.getChannelData(channel)[i]*= 0.11; 
+          buffer.getChannelData(channel)[i]*= 0.11;
           b6 = white * 0.115926;
         }
       }
@@ -42,7 +42,7 @@ function bufferNoise ( type, duration = 10 ) {
     case "white":
     default:
       for( var channel = 0; channel < nChannels; channel++) {
-        for (var i = 0; i < size; i++) 
+        for (var i = 0; i < size; i++)
           buffer.getChannelData(channel)[i] = ( Math.random() * 2 - 1 ) * .5; // reduce gain
       }
       break;
@@ -54,19 +54,19 @@ function bufferNoise ( type, duration = 10 ) {
 /**
  *
  * MIT License
- * 
+ *
  * Copyright (c) 2020 Thomas Issa-Sayegh (thomas@0l.fi)
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -211,14 +211,15 @@ class boxLPFNoise extends box {
 
     this.noise  = audioContext.createBufferSource();
     this.filter = audioContext.createBiquadFilter();
-    this.tremolo = new effectTremolo;
+//  this.tremolo = new effectTremolo;
 
     this.noise.buffer = bufferNoise("white",10);
     this.noise.loop   = true;
 
     this.noise.connect(  this.filter );
-    this.filter.connect( this.tremolo.input );
-    this.tremolo.output.connect( this.master );
+    this.filter.connect( this.master );
+//  this.filter.connect( this.tremolo.input );
+//  this.tremolo.output.connect( this.master );
     this.master.connect( audioContext.destination );
 
     this.noise.start();
@@ -226,11 +227,11 @@ class boxLPFNoise extends box {
 
     this.fCtrl     = new controlFloat(this,'f',128,1024);
     this.qCtrl     = new controlFloat(this,'q',0,1.8);
-    this.rateCtrl  = new controlFloat(this,'rate',0,12);
+//  this.rateCtrl  = new controlFloat(this,'rate',0,12);
 
     this.fCtrl.value = 256;
     this.qCtrl.value = 0.9;
-    this.rateCtrl.value = 0;
+//  this.rateCtrl.value = 0;
 
   }
 
@@ -239,8 +240,8 @@ class boxLPFNoise extends box {
   get q()  { return this.filter.Q.value; }
   set q(x) { return this.filter.Q.linearRampToValueAtTime( x * 10.0, audioContext.currentTime + 0.5);  }
 
-  get rate()  { return this.tremolo.rate; }
-  set rate(x) { return this.tremolo.rate = x; }
+//get rate()  { return this.tremolo.rate; }
+//set rate(x) { return this.tremolo.rate = x; }
 
 }
 
@@ -419,7 +420,8 @@ class effectTremolo {
     this.oscillator.type            = "sine";
     this.oscillator.frequency.value = 0;
     this.oscillator.start()
-    
+
+    // DEBUG
     console.log(this);
 
   }
@@ -428,7 +430,7 @@ class effectTremolo {
   get output()    { return this.audioGain; }
   get state()     { return ( this.rate != 0 ); }
 
-  get rate()      { return this.oscillator.frequency.value; } 
+  get rate()      { return this.oscillator.frequency.value; }
   set rate(x)     {
     if( x == 0 ) {
       this.oscillator.disconnect();
@@ -438,9 +440,9 @@ class effectTremolo {
       this.oscillator.connect( this.audioGain.gain );
     }
     this.oscillator.frequency.value = x;
-  } 
-  get waveform()  { return this.oscillator.type; } 
-  set waveform(x) { return this.oscillator.type = x; } 
+  }
+  get waveform()  { return this.oscillator.type; }
+  set waveform(x) { return this.oscillator.type = x; }
 
 }
 
@@ -499,7 +501,7 @@ class audioBinauralSine {
   get output() { return this.stereoPanner.output; }
 
   get level()  { return this.output.gain.value;   }
-  set level(x) { this.output.gain.value = x; } 
+  set level(x) { this.output.gain.value = x; }
 
   get frequency()  { return this.oscillatorLeft.frequency.value; }
   set frequency(f) {
@@ -744,26 +746,23 @@ class interactionKnob {
   }
 }
 
-
-
-
 class bijection {
   constructor( min = 0, max = 1 ) {
     this.min  = min;
     this.max  = max;
   }
-  /* default bijection is identity */ 
-  y( x ) { return x; }  
+  /* default bijection is identity */
+  y( x ) { return x; }
   x( y ) { return y; }
   /* scale : [0;1] -> [min;max]  */
   /* unit  : [min;max] -> [0;1]  */
   /* unit o scale = scale o unit = id  */
-  scale( x ) { return (this.max - this.min) * x + this.min; }  
+  scale( x ) { return (this.max - this.min) * x + this.min; }
   unit( x )  { return ( x - this.min ) / (this.max - this.min); }
   /* exp:  [0;1] <-> [0;1]      */
   /* log:  [0;1] <-> [0;1]      */
   /* log o exp = exp o log = id */
-  exp( x ) { return (Math.pow(10,x) - 1) / 9; }  
+  exp( x ) { return (Math.pow(10,x) - 1) / 9; }
   log( x ) { return Math.log10( 9*x + 1 );    }
   /* truth: {0,1} -> {false,true} */
   /* gate: {false,true} -> {0,1} */
@@ -772,21 +771,19 @@ class bijection {
   gate( b )  { b ? b=1 : b=0; return b }
 }
 class bijectionBoolean extends bijection {
-  y( x ) { return this.truth(x); }  
+  y( x ) { return this.truth(x); }
   x( y ) { return this.gate(y); }
 }
 class bijectionLinear extends bijection {
-  y( x ) { return this.scale(x); }  
+  y( x ) { return this.scale(x); }
   x( y ) { return this.unit(y);  }
 }
 class bijectionExponential extends bijection {
-  y( x ) { return this.scale(this.exp(x)); }  
+  y( x ) { return this.scale(this.exp(x)); }
   x( y ) { return this.log(this.unit(y));  }
 }
 class bijectionLogarithmic extends bijection {
-  y( x ) { return this.scale(this.log(x)); }  
+  y( x ) { return this.scale(this.log(x)); }
   x( y ) { return this.exp(this.unit(y));  }
 }
-
-
 
