@@ -71,7 +71,7 @@ nav > a[href="."] {  font-size: 0; }
 nav > a[href="."]:before {
   content: "ï";
   font-size: calc( var(--nav-h) / 1.5 );
-  line-height:  calc( var(--nav-h) / 1.5 );
+/*  line-height:  calc( var(--nav-h) / 1.5 ); */
   font-family: "Entypo";
   font-variant: initial;
 }
