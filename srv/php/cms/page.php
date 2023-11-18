@@ -4,49 +4,75 @@ namespace cms;
 
 class page {
 
-  use \common\tMagicGetSet;
+  public const HTML_LANG     = \config::CMS_HTML_LANG    ;
+  public const HTML_CHARSET  = \config::CMS_HTML_CHARSET ;
+  public const HTML_TITLE    = \config::CMS_HTML_TITLE   ;
+  public const DIR_STATIC    = \config::CMS_DIR_STATIC   ;
+  public const DIR_CSS       = \config::CMS_DIR_CSS      ;
+  public const DIR_JS        = \config::CMS_DIR_JS       ;
+  public const DIR_PAGES     = \config::CMS_DIR_PAGES    ;
+  public array $css = [];
+  public array $js  = [];
+  public string $header;
+  public string $nav;
+  public string $main;
+  public string $aside;
+  public string $footer;
+  public int $code = 200;
 
-  private $_css = array();
-  private $_js  = array();
-  private $_header;
-  private $_nav;
-  private $_main;
-  private $_aside;
-  private $_footer;
-  private $_error;
+  public function __construct( string $slug = "" ) {
 
-  private $_source;
+    if( empty($slug) ) {
+      $slug = "index";
+    }
 
-  public function __construct( $slug = false ) {
-    $this->_source = new dataSourceFiles();
-    $data = $this->_source->get( $slug );
+    if( ! file_exists(self::DIR_PAGES.$slug.".html") ) {
+      $slug = "404";
+      $this->code = 404;
+    }
 
-    $this->_css = $this->_prefix(config::DIR_CSS,@$data['css']);
-    $this->_js  = $this->_prefix(config::DIR_JS,@$data['js']);
-    $this->_header = @$data['header'];
-    $this->_nav    = @$data['nav'];
-    $this->_aside  = @$data['aside'];
-    $this->_footer = @$data['footer'];
-    $this->_main   = @$data['main'];
+    $this->css = self::prefix(
+      self::DIR_CSS,
+      self::getLines(self::DIR_STATIC.'css.cfg')
+    );
 
-    $this->_error  = @$data['error'];
+    $this->js  = self::prefix(
+      self::DIR_JS,
+      self::getLines(self::DIR_STATIC.'js.cfg')
+    );
+
+    $this->header  = self::load(self::DIR_STATIC.'header.html');
+    $this->nav     = self::load(self::DIR_STATIC.'nav.html');
+    $this->aside   = self::load(self::DIR_STATIC.'aside.html');
+    $this->footer  = self::load(self::DIR_STATIC.'footer.html');
+    $this->main    = self::load(self::DIR_PAGES.$slug.".html");
 
   }
 
-  public function get_css()     { return $this->_css;    }
-  public function get_js()      { return $this->_js;     }
-  public function get_header()  { return $this->_header; }
-  public function get_nav()     { return $this->_nav;    }
-  public function get_main()    { return $this->_main;   }
-  public function get_aside()   { return $this->_aside;  }
-  public function get_footer()  { return $this->_footer; }
-  public function get_error()   { return $this->_error;  }
+  private static function load( string $filename, bool $strip = false ) {
+    $data = (string) @file_get_contents($filename);
+    return $strip
+      ? str_replace( ["\r", "\n"], '', $data)
+      : $data;
+  }
 
-  private function _prefix( $prefix, $arr = array() ) {
-    if( empty($arr) ) return array();
-    $items = array();
-    foreach( $arr as $item )
-      $items[] = $prefix.$item;
+  private static function getLines( string $filename ) {
+    $lines = [];
+    if( ! file_exists($filename) ) {
+      return [];
+    }
+    $fn = fopen($filename,"r");
+    while( ($line=fgets($fn)) !== false ) { 
+      $lines[] = trim($line);
+    }
+    return $lines;
+  }
+
+  private static function prefix( string $prefix, array $arr ) {
+    $items = [];
+    foreach( $arr as $item ) {
+      $items[] = $prefix . (string) $item;
+    }
     return $items;
   }
 

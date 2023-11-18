@@ -4,15 +4,15 @@ jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v2.3.2
-
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
         server: ftp.cluster029.hosting.ovh.net
         username: ${{ secrets.OVH_FTP_USER }}
         password: ${{ secrets.OVH_FTP_PASS }}
-        local-dir: ./srv/
-        server-dir: /www/
+        local-dir: ./
+        server-dir: /
