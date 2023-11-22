@@ -1,10 +1,8 @@
 <?php
 
-define("SRV", dirname(__DIR__).DIRECTORY_SEPARATOR );
-
 class config {
 
-    const DIR_ROOT      = SRV;
+    const DIR_ROOT      = __DIR__.DIRECTORY_SEPARATOR;
     const DIR_PHP       = self::DIR_ROOT."php".DIRECTORY_SEPARATOR;
     const DIR_WWW       = self::DIR_ROOT."www".DIRECTORY_SEPARATOR;
 
