@@ -1,6 +1,6 @@
 # acidnoise.com
 
-Sources of [acidnoise.com](https://acinoise.com).
+Sources of [acidnoise.com](https://acidnoise.com).
 
 ## Audio
 
