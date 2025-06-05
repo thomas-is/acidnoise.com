@@ -165,6 +165,7 @@ class box {
     this.master = audioContext.createGain();
     this.master.gain.value = 0;
 
+    this.isMuted   = false;
     this.isStarted = false;
 
     this.stateCtrl  = new controlBoolean(this,'state');
@@ -172,7 +173,8 @@ class box {
     this.masterCtrl = new controlFloat(this,'level',0,1,'exp');
 
     this.masterCtrl.value = 0.1;
-    this.powerCtrl.value = false;
+    //this.powerCtrl.value = false;
+    this.powerCtrl.value = true;
 
   }
   start() { audioContext.resume().then( this.isStarted = true ); }
@@ -187,7 +189,7 @@ class box {
       this.master.gain.linearRampToValueAtTime(x,audioContext.currentTime + 0.5);
   }
   get state()  { return (! this.isMuted) && (audioContext.state == "running"); }
-  set state(x) { } 
+  set state(x) { }
   get power()  { return ! this.isMuted; }
   set power(x) {
     if( ! this.isStarted )
@@ -337,16 +339,16 @@ class boxNoiseHarmonics extends box {
 
   }
 
-  set b0( value ) { this.levels[0].gain.value = value * 5; }
-  set b1( value ) { this.levels[1].gain.value = value * 1.5; }
-  set b2( value ) { this.levels[2].gain.value = value * 1; }
-  set b3( value ) { this.levels[3].gain.value = value * 1; }
-  set b4( value ) { this.levels[4].gain.value = value * 1; }
-  set b5( value ) { this.levels[5].gain.value = value * 1; }
-  set b6( value ) { this.levels[6].gain.value = value * 1; }
-  set b7( value ) { this.levels[7].gain.value = value * 1; }
-  set b8( value ) { this.levels[8].gain.value = value * 1; }
-  set b9( value ) { this.levels[9].gain.value = value * 1; }
+  set b0( value ) { this.levels[0].gain.value = value * 4; }
+  set b1( value ) { this.levels[1].gain.value = value * 3; }
+  set b2( value ) { this.levels[2].gain.value = value * 3; }
+  set b3( value ) { this.levels[3].gain.value = value * 3; }
+  set b4( value ) { this.levels[4].gain.value = value * 3; }
+  set b5( value ) { this.levels[5].gain.value = value * 3; }
+  set b6( value ) { this.levels[6].gain.value = value * 3; }
+  set b7( value ) { this.levels[7].gain.value = value * 3; }
+  set b8( value ) { this.levels[8].gain.value = value * 3; }
+  set b9( value ) { this.levels[9].gain.value = value * 3; }
   set  q( value ) {
     for(var i=0; i<10; i++) {
       this.filters[i].Q.value = value;

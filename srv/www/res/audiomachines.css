@@ -70,16 +70,26 @@ div#master > h2, [data-machine] > h2 {
     line-height: 28px;
     font-variant: all-small-caps;
 }
+
+[data-machine] > h2 {
+    margin-top: 16px;
+}
 [data-machine] > h3 {
     font-size: 20px;
     line-height: 20px;
     font-variant: all-small-caps;
 }
 
-
 [data-machine] > * > * {
     flex: 0 0 auto;
     margin: 4px;
+}
+
+[data-machine] > [data-property="power"] {
+    display: none;
+}
+[data-machine] > [data-property="state"] {
+    display: none;
 }
 
 
@@ -278,6 +288,7 @@ i.toggle:before{
 .separator {
     height: 20px;
 }
+
 
 
 
