@@ -14,5 +14,5 @@ jobs:
         server: ftp.cluster029.hosting.ovh.net
         username: ${{ secrets.OVH_FTP_USER }}
         password: ${{ secrets.OVH_FTP_PASS }}
-        local-dir: ./
+        local-dir: ./srv/
         server-dir: /
